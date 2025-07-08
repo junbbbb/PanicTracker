@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter:*)",
+      "Bash(/mnt/c/flutter/bin/flutter devices)",
+      "Bash(export:*)",
+      "Bash(adb:*)",
+      "Bash(cmd.exe /c \"flutter run --debug\")",
+      "Bash(cmd.exe /c \"cd /d C:\\Users\\%USERNAME%\\AppData\\Local\\Temp && flutter run --debug\")",
+      "Bash(cmd.exe /c \"cd /d C:\\temp\\claudeapp && flutter create . --platforms=android\")",
+      "Bash(cmd.exe /c \"cd /d C:\\temp\\claudeapp && flutter run --debug\")",
+      "Bash(cmd.exe:*)",
+      "Bash(cp:*)",
+      "Bash(mkdir:*)",
+      "Bash(/mnt/c/flutter/bin/flutter run)",
+      "Bash(bash --version)",
+      "Bash(/mnt/c/flutter/bin/flutter.bat run)",
+      "Bash(ls:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe --version)",
+      "Bash(timeout:*)",
+      "Bash(grep:*)",
+      "Bash(/mnt/c/flutter/bin/dart --version)",
+      "Bash(\"/mnt/c/Users/lbj/AppData/Local/Android/Sdk/platform-tools/adb.exe\" devices)",
+      "Bash(\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" --version)",
+      "Bash(FLUTTER_ROOT=\"/mnt/c/flutter\" DART=\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" timeout 300 flutter run --verbose)",
+      "Bash(chmod:*)",
+      "Bash(rm:*)",
+      "Bash(\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" compile kernel lib/main.dart)",
+      "Bash(\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" run build_runner build --delete-conflicting-outputs)"
+    ],
+    "deny": []
+  }
+}

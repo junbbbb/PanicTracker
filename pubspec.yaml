@@ -1,0 +1,64 @@
+name: claudeapp
+description: A Flutter app for anxiety disorder tracking with TDD and Clean Architecture
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^2.4.0
+  
+  # Local Database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  
+  # Charts
+  fl_chart: ^0.64.0
+  
+  # UI
+  cupertino_icons: ^1.0.2
+  
+  # Utilities
+  intl: ^0.18.0
+  uuid: ^4.0.0
+  path_provider: ^2.1.0
+  equatable: ^2.0.5
+  
+  # CSV Export
+  csv: ^5.0.2
+  
+  # File operations
+  path: ^1.8.0
+  
+  # JSON handling
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  # Code generation
+  build_runner: ^2.4.6
+  hive_generator: ^2.0.1
+  json_serializable: ^6.7.1
+  
+  # Testing
+  mockito: ^5.4.2
+  mocktail: ^1.0.0
+  
+  # Linting
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/icons/
