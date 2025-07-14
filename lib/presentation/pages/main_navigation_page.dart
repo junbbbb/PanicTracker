@@ -3,7 +3,6 @@ import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/history/presentation/pages/history_page.dart';
 import '../../features/entry/presentation/pages/add_entry_page.dart';
 import '../../features/analysis/presentation/pages/analysis_page.dart';
-import '../../features/profile/presentation/pages/profile_page.dart';
 
 class MainNavigationPage extends StatefulWidget {
   const MainNavigationPage({super.key});
@@ -19,7 +18,6 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     const HomePage(),
     const HistoryPage(),
     const AnalysisPage(),
-    const ProfilePage(),
   ];
 
   @override
@@ -55,19 +53,13 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
                   index: 1,
                   isSelected: _currentIndex == 1,
                 ),
-                _buildAddButton(),
                 _buildNavItem(
                   icon: Icons.analytics_rounded,
                   label: '분석',
                   index: 2,
                   isSelected: _currentIndex == 2,
                 ),
-                _buildNavItem(
-                  icon: Icons.person_rounded,
-                  label: '프로필',
-                  index: 3,
-                  isSelected: _currentIndex == 3,
-                ),
+                _buildAddButton(),
               ],
             ),
           ),
@@ -125,29 +117,25 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           MaterialPageRoute(
             builder: (context) => const AddEntryPage(),
           ),
-        ).then((_) {
-          // 저장 후 돌아왔을 때 홈 탭으로 이동
-        setState(() {
-            _currentIndex = 0;
-          });
-        });
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                Icons.add_rounded,
-                color: Colors.grey.shade700,
-                size: 20,
+            Icon(
+              Icons.add_rounded,
+              size: 24,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '추가',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade400,
               ),
             ),
           ],

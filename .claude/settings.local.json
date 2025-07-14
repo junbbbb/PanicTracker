@@ -28,7 +28,14 @@
       "Bash(chmod:*)",
       "Bash(rm:*)",
       "Bash(\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" compile kernel lib/main.dart)",
-      "Bash(\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" run build_runner build --delete-conflicting-outputs)"
+      "Bash(\"/mnt/c/flutter/bin/cache/dart-sdk/bin/dart.exe\" run build_runner build --delete-conflicting-outputs)",
+      "Bash(open:*)",
+      "Bash(gem which:*)",
+      "Bash(echo $PATH)",
+      "Bash(gem environment:*)",
+      "Bash(pod:*)",
+      "Bash(xcrun simctl list:*)",
+      "Bash(xcrun simctl boot:*)"
     ],
     "deny": []
   }

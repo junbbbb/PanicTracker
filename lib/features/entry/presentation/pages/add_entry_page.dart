@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/anxiety_entry_providers.dart';
+import '../../domain/entities/anxiety_entry.dart';
 
 class AddEntryPage extends ConsumerStatefulWidget {
-  const AddEntryPage({super.key});
+  final AnxietyEntry? entryToEdit;
+  
+  const AddEntryPage({super.key, this.entryToEdit});
 
   @override
   ConsumerState<AddEntryPage> createState() => _AddEntryPageState();
@@ -31,6 +34,28 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
   ];
 
   final List<String> _selectedSymptoms = [];
+  late bool _isEditMode;
+  String? _entryId;
+
+  @override
+  void initState() {
+    super.initState();
+    _isEditMode = widget.entryToEdit != null;
+    if (widget.entryToEdit != null) {
+      _entryId = widget.entryToEdit!.id;
+      _loadEntryData(widget.entryToEdit!);
+    }
+  }
+
+  void _loadEntryData(AnxietyEntry entry) {
+    _triggerController.text = entry.trigger;
+    _negativeThoughtsController.text = entry.negativeThoughts;
+    _copingStrategyController.text = entry.copingStrategy;
+    _durationController.text = entry.durationInMinutes.toString();
+    _intensityLevel = entry.intensityLevel;
+    _selectedSymptoms.clear();
+    _selectedSymptoms.addAll(entry.symptoms);
+  }
 
   @override
   void dispose() {
@@ -39,6 +64,33 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
     _copingStrategyController.dispose();
     _durationController.dispose();
     super.dispose();
+  }
+
+  String _getIntensityLabel(int intensity) {
+    switch (intensity) {
+      case 1:
+        return '매우 약함';
+      case 2:
+        return '약함';
+      case 3:
+        return '약간 약함';
+      case 4:
+        return '보통 이하';
+      case 5:
+        return '보통';
+      case 6:
+        return '보통 이상';
+      case 7:
+        return '강함';
+      case 8:
+        return '매우 강함';
+      case 9:
+        return '극도로 강함';
+      case 10:
+        return '최고 강도';
+      default:
+        return '보통';
+    }
   }
 
   @override
@@ -50,18 +102,26 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
       backgroundColor: Colors.white, // Pure white background
       appBar: AppBar(
         title: const Text(
-          '감정 기록 추가',
+          '새로운 기록',
           style: TextStyle(
+            fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1A1A1A),
+            color: Color(0xFF222222),
           ),
         ),
         backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1A1A1A),
+        foregroundColor: const Color(0xFF222222),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
+          icon: const Icon(Icons.close, color: Color(0xFF222222)),
           onPressed: () => Navigator.of(context).pop(),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: const Color(0xFFDDDDDD),
+            height: 1.0,
+          ),
         ),
       ),
       body: Form(
@@ -72,24 +132,26 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
               // Header section
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      '오늘의 감정을 기록해보세요',
+                      '지금 느끼는 감정을\n기록해보세요',
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF1A1A1A),
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF222222),
+                        height: 1.2,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '솔직하게 작성하시면 더 나은 분석을 받을 수 있어요',
+                    const SizedBox(height: 12),
+                    const Text(
+                      '솔직한 기록이 더 나은 분석으로 이어집니다',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey.shade600,
+                        color: Color(0xFF717171),
+                        height: 1.4,
                       ),
                     ),
                   ],
@@ -106,9 +168,52 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       title: '무엇이 불안감을 유발했나요?',
                       child: TextFormField(
                         controller: _triggerController,
-                        decoration: const InputDecoration(
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF222222),
+                        ),
+                        decoration: InputDecoration(
                           hintText: '예: 중요한 발표, 새로운 사람들과의 만남...',
-                          hintStyle: TextStyle(color: Color(0xFF9CA3AF)),
+                          hintStyle: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF717171),
+                          ),
+                          contentPadding: const EdgeInsets.all(16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFDDDDDD),
+                              width: 1,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFDDDDDD),
+                              width: 1,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF222222),
+                              width: 2,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFEF4444),
+                              width: 1,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFEF4444),
+                              width: 2,
+                            ),
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -128,51 +233,68 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(24),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8FAFC),
+                              color: const Color(0xFFF7F7F7),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFFE6E6E6)),
                             ),
                             child: Column(
                               children: [
                                 Text(
                                   '$_intensityLevel',
                                   style: const TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w700,
+                                    fontSize: 48,
+                                    fontWeight: FontWeight.w600,
                                     color: Color(0xFFFF5A5F),
                                   ),
                                 ),
-                                const SizedBox(height: 16),
-                                Slider(
-                                  value: _intensityLevel.toDouble(),
-                                  min: 1,
-                                  max: 10,
-                                  divisions: 9,
-                                  activeColor: const Color(0xFFFF5A5F),
-                                  inactiveColor: const Color(0xFFE6E6E6),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _intensityLevel = value.round();
-                                    });
-                                  },
+                                const SizedBox(height: 8),
+                                Text(
+                                  _getIntensityLabel(_intensityLevel),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF717171),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
+                                const SizedBox(height: 24),
+                                SliderTheme(
+                                  data: SliderTheme.of(context).copyWith(
+                                    activeTrackColor: const Color(0xFFFF5A5F),
+                                    inactiveTrackColor: const Color(0xFFDDDDDD),
+                                    thumbColor: const Color(0xFFFF5A5F),
+                                    trackHeight: 4,
+                                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+                                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                                  ),
+                                  child: Slider(
+                                    value: _intensityLevel.toDouble(),
+                                    min: 1,
+                                    max: 10,
+                                    divisions: 9,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _intensityLevel = value.round();
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      '1',
+                                    const Text(
+                                      '매우 약함',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.grey.shade600,
+                                        color: Color(0xFF717171),
                                       ),
                                     ),
-                                    Text(
-                                      '10',
+                                    const Text(
+                                      '매우 강함',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.grey.shade600,
+                                        color: Color(0xFF717171),
                                       ),
                                     ),
                                   ],
@@ -322,23 +444,58 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                             formNotifier.updateDuration(int.parse(_durationController.text));
                             formNotifier.updateIntensityLevel(_intensityLevel);
 
-                            final success = await formNotifier.saveEntry();
+                            final success = await formNotifier.saveEntry(entryId: _entryId);
                             if (success) {
-                              formNotifier.reset();
-                              _triggerController.clear();
-                              _negativeThoughtsController.clear();
-                              _copingStrategyController.clear();
-                              _durationController.clear();
-                              _selectedSymptoms.clear();
-                              _intensityLevel = 5;
-                              setState(() {});
+                              if (!_isEditMode) {
+                                formNotifier.reset();
+                                _triggerController.clear();
+                                _negativeThoughtsController.clear();
+                                _copingStrategyController.clear();
+                                _durationController.clear();
+                                _selectedSymptoms.clear();
+                                _intensityLevel = 5;
+                                setState(() {});
+                              }
                               
                               ref.invalidate(entriesProvider);
                               
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('기록이 성공적으로 저장되었습니다!'),
-                                  backgroundColor: Color(0xFF00D924),
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: const Icon(
+                                          Icons.check_circle_rounded,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      const Expanded(
+                                        child: Text(
+                                          '기록이 성공적으로 저장되었습니다!',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: const Color(0xFF34D399),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  margin: const EdgeInsets.all(16),
+                                  elevation: 8,
+                                  duration: const Duration(seconds: 3),
                                 ),
                               );
                               
@@ -347,8 +504,41 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('오류: ${formState.error}'),
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: const Icon(
+                                          Icons.error_rounded,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          '오류: ${formState.error}',
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   backgroundColor: const Color(0xFFEF4444),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  margin: const EdgeInsets.all(16),
+                                  elevation: 8,
+                                  duration: const Duration(seconds: 4),
                                 ),
                               );
                             }
@@ -357,12 +547,11 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF5A5F),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          elevation: 4,
-                          shadowColor: const Color(0xFFFF5A5F).withOpacity(0.4),
+                          elevation: 0,
                         ),
                         child: formState.isLoading
                             ? const SizedBox(
@@ -374,7 +563,7 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                                 ),
                               )
                             : const Text(
-                                '기록 저장하기',
+                                '기록 저장',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -405,7 +594,17 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE6E6E6)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+        border: Border.all(
+          color: const Color(0xFFDDDDDD),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,20 +614,21 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1A1A1A),
+              color: Color(0xFF222222),
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               subtitle,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade600,
+                color: Color(0xFF717171),
+                height: 1.4,
               ),
             ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           child,
         ],
       ),
