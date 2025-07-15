@@ -534,11 +534,11 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF5A5F),
+                          backgroundColor: const Color(0xFFFF8F00),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           elevation: 0,
                         ),

@@ -5,6 +5,7 @@ import '../../../entry/presentation/providers/anxiety_entry_providers.dart';
 import '../../../entry/presentation/pages/add_entry_page.dart';
 import '../../../breathing/presentation/pages/breathing_exercise_page.dart';
 import '../../../profile/presentation/pages/profile_page.dart';
+import '../../../panic_response/presentation/pages/panic_response_page.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -199,28 +200,14 @@ class HomePage extends ConsumerWidget {
                         },
                         child: Container(
                           width: double.infinity,
-                          height: 68,
+                          height: 56,
                           decoration: BoxDecoration(
                             color: const Color(0xFFFF8F00),
-                            borderRadius: BorderRadius.circular(34),
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: const Color(0xFFE65100),
                               width: 0.5,
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFFF9800).withOpacity(0.4),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                                spreadRadius: -4,
-                              ),
-                              BoxShadow(
-                                color: const Color(0xFFE65100).withOpacity(0.2),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                                spreadRadius: -2,
-                              ),
-                            ],
                           ),
                           child: Stack(
                             children: [
@@ -294,6 +281,43 @@ class HomePage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                       
+                      // 지금 공황 버튼
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PanicResponsePage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 0.5,
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '지금 공황',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF222222),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 16),
                     ],
                   ),
