@@ -22,6 +22,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isDateRangeSelected = false;
+  DateTime? _selectedCalendarDate;
+  DateTime _currentCalendarMonth = DateTime.now();
 
   Color _getIntensityColor(int intensity) {
     if (intensity >= 8) return const Color(0xFFE53E3E); // 빨간색 (매우 높음)
@@ -32,8 +34,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
   Widget _buildCalendarView(List<AnxietyEntry> entries) {
     final now = DateTime.now();
-    final firstDayOfMonth = DateTime(now.year, now.month, 1);
-    final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+    final firstDayOfMonth = DateTime(_currentCalendarMonth.year, _currentCalendarMonth.month, 1);
+    final lastDayOfMonth = DateTime(_currentCalendarMonth.year, _currentCalendarMonth.month + 1, 0);
     final daysInMonth = lastDayOfMonth.day;
     
     // 월의 첫 번째 날이 무슨 요일인지 확인 (월요일=1, 일요일=7)
@@ -46,7 +48,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     final Map<int, List<AnxietyEntry>> entriesByDay = {};
     for (final entry in entries) {
       final day = entry.timestamp.day;
-      if (entry.timestamp.month == now.month && entry.timestamp.year == now.year) {
+      if (entry.timestamp.month == _currentCalendarMonth.month && 
+          entry.timestamp.year == _currentCalendarMonth.year) {
         entriesByDay[day] = entriesByDay[day] ?? [];
         entriesByDay[day]!.add(entry);
       }
@@ -72,16 +75,77 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // 월 표시
+            // 년도/월 표시 및 변경 버튼
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: Text(
-                DateFormat('yyyy년 MM월').format(now),
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF222222),
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // 이전 월 버튼
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _currentCalendarMonth = DateTime(
+                          _currentCalendarMonth.year,
+                          _currentCalendarMonth.month - 1,
+                        );
+                        // 월이 변경되면 선택된 날짜 초기화
+                        _selectedCalendarDate = null;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.chevron_left,
+                        size: 20,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+                  
+                  // 년도/월 텍스트 (년도 탭 가능)
+                  GestureDetector(
+                    onTap: () => _showYearPicker(),
+                    child: Text(
+                      DateFormat('yyyy년 MM월').format(_currentCalendarMonth),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF222222),
+                      ),
+                    ),
+                  ),
+                  
+                  // 다음 월 버튼
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _currentCalendarMonth = DateTime(
+                          _currentCalendarMonth.year,
+                          _currentCalendarMonth.month + 1,
+                        );
+                        // 월이 변경되면 선택된 날짜 초기화
+                        _selectedCalendarDate = null;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.chevron_right,
+                        size: 20,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             
@@ -121,44 +185,71 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                 final dayNumber = index - firstWeekday + 2;
                 final isValidDay = dayNumber > 0 && dayNumber <= daysInMonth;
                 final dayEntries = isValidDay ? entriesByDay[dayNumber] ?? [] : <AnxietyEntry>[];
-                final isToday = isValidDay && dayNumber == now.day;
+                final isToday = isValidDay && 
+                    dayNumber == now.day && 
+                    _currentCalendarMonth.month == now.month && 
+                    _currentCalendarMonth.year == now.year;
+                final selectedDate = DateTime(_currentCalendarMonth.year, _currentCalendarMonth.month, dayNumber);
+                final isSelectedDate = _selectedCalendarDate != null && 
+                    isValidDay && 
+                    _selectedCalendarDate!.year == selectedDate.year &&
+                    _selectedCalendarDate!.month == selectedDate.month &&
+                    _selectedCalendarDate!.day == selectedDate.day;
                 
-                return Container(
-                  decoration: BoxDecoration(
-                    color: isToday ? const Color(0xFF222222).withOpacity(0.1) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
+                return GestureDetector(
+                  onTap: isValidDay ? () {
+                    setState(() {
+                      _selectedCalendarDate = selectedDate;
+                    });
+                  } : null,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isSelectedDate 
+                          ? const Color(0xFFFF9800).withOpacity(0.2)
+                          : isToday 
+                              ? const Color(0xFF222222).withOpacity(0.1) 
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                      border: isSelectedDate 
+                          ? Border.all(color: const Color(0xFFFF9800), width: 2)
+                          : null,
+                    ),
+                    child: isValidDay
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              dayNumber.toString(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: isSelectedDate || isToday ? FontWeight.w600 : FontWeight.normal,
+                                color: isSelectedDate 
+                                    ? const Color(0xFFFF9800)
+                                    : isToday 
+                                        ? const Color(0xFF222222) 
+                                        : const Color(0xFF484848),
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            if (dayEntries.isNotEmpty)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: dayEntries.take(3).map((entry) {
+                                  return Container(
+                                    width: 6,
+                                    height: 6,
+                                    margin: const EdgeInsets.only(right: 2),
+                                    decoration: BoxDecoration(
+                                      color: _getIntensityColor(entry.intensityLevel),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                          ],
+                        )
+                      : null,
                   ),
-                  child: isValidDay
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            dayNumber.toString(),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: isToday ? FontWeight.w600 : FontWeight.normal,
-                              color: isToday ? const Color(0xFF222222) : const Color(0xFF484848),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          if (dayEntries.isNotEmpty)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: dayEntries.take(3).map((entry) {
-                                return Container(
-                                  width: 6,
-                                  height: 6,
-                                  margin: const EdgeInsets.only(right: 2),
-                                  decoration: BoxDecoration(
-                                    color: _getIntensityColor(entry.intensityLevel),
-                                    shape: BoxShape.circle,
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                        ],
-                      )
-                    : null,
                 );
               },
             ),
@@ -197,6 +288,83 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSelectedDateEntries(List<AnxietyEntry> entries) {
+    final selectedDateEntries = _selectedCalendarDate != null
+        ? entries.where((entry) {
+            return entry.timestamp.year == _selectedCalendarDate!.year &&
+                   entry.timestamp.month == _selectedCalendarDate!.month &&
+                   entry.timestamp.day == _selectedCalendarDate!.day;
+          }).toList()
+        : <AnxietyEntry>[];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 헤더
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${_selectedCalendarDate!.month}월 ${_selectedCalendarDate!.day}일 기록',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF222222),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF9800).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${selectedDateEntries.length}개',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFFFF9800),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // 기록 리스트
+        if (selectedDateEntries.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.event_note,
+                  size: 48,
+                  color: Colors.grey.shade300,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '이 날에는 기록이 없습니다',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade500,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          ...selectedDateEntries.map((entry) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: _buildEntryCard(entry),
+          )).toList(),
+      ],
     );
   }
 
@@ -334,6 +502,10 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                                         onTap: () {
                                           setState(() {
                                             _isCalendarView = true;
+                                            // 달력뷰로 전환할 때 오늘 날짜를 자동으로 선택
+                                            if (_selectedCalendarDate == null) {
+                                              _selectedCalendarDate = DateTime.now();
+                                            }
                                           });
                                         },
                                         child: Container(
@@ -476,7 +648,16 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: _isCalendarView 
                       ? SliverToBoxAdapter(
-                          child: _buildCalendarView(searchedEntries),
+                          child: Column(
+                            children: [
+                              _buildCalendarView(searchedEntries),
+                              // 선택된 날짜의 기록들
+                              if (_selectedCalendarDate != null) ...[
+                                const SizedBox(height: 24),
+                                _buildSelectedDateEntries(searchedEntries),
+                              ],
+                            ],
+                          ),
                         )
                       : SliverList(
                           delegate: SliverChildBuilderDelegate(
@@ -605,6 +786,221 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     return filter;
   }
 
+  Future<void> _showYearPicker() async {
+    final currentYear = DateTime.now().year;
+    final startYear = currentYear - 10;
+    final endYear = currentYear + 5;
+    int selectedYear = _currentCalendarMonth.year;
+    int selectedMonth = _currentCalendarMonth.month;
+    
+    // 현재 년도가 보이도록 스크롤 컨트롤러 설정
+    final scrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final currentIndex = selectedYear - startYear;
+      final itemWidth = 80.0; // 각 년도 아이템 너비(72) + 마진(8)
+      final scrollOffset = (currentIndex * itemWidth) - 100; // 현재 년도가 중앙 근처에 오도록
+      if (scrollOffset > 0) {
+        scrollController.animateTo(
+          scrollOffset,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+    
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => Dialog(
+          backgroundColor: Colors.white, // 다이얼로그 배경을 흰색으로 설정
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            constraints: const BoxConstraints(maxHeight: 450, maxWidth: 350),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  '년도/월 선택',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF222222),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                
+                // 년도 선택
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '년도',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF717171),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 40,
+                      child: ListView.builder(
+                        controller: scrollController,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: endYear - startYear + 1,
+                        itemBuilder: (context, index) {
+                          final year = startYear + index;
+                          final isSelected = year == selectedYear;
+                          
+                          return GestureDetector(
+                            onTap: () {
+                              setDialogState(() {
+                                selectedYear = year;
+                              });
+                            },
+                            child: Container(
+                              width: 72, // 고정 너비 설정
+                              margin: const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected ? const Color(0xFFFF9800) : const Color(0xFFF5F5F5),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$year',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: isSelected ? Colors.white : const Color(0xFF222222),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 20),
+                
+                // 월 선택
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '월',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF717171),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        childAspectRatio: 2.2,
+                        crossAxisSpacing: 6,
+                        mainAxisSpacing: 6,
+                      ),
+                      itemCount: 12,
+                      itemBuilder: (context, index) {
+                        final month = index + 1;
+                        final isSelected = month == selectedMonth;
+                        
+                        return GestureDetector(
+                          onTap: () {
+                            setDialogState(() {
+                              selectedMonth = month;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isSelected ? const Color(0xFFFF9800) : const Color(0xFFF5F5F5),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${month}월',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: isSelected ? Colors.white : const Color(0xFF222222),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 20),
+                
+                // 버튼들
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          '취소',
+                          style: TextStyle(
+                            color: Color(0xFF717171),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _currentCalendarMonth = DateTime(selectedYear, selectedMonth);
+                            _selectedCalendarDate = null;
+                          });
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF9800),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          '확인',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _showDateRangePicker() async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
@@ -698,14 +1094,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     }
 
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.grey.shade300,
-          width: 1,
-        ),
-      ),
+      color: Colors.white,
       child: Stack(
         children: [
           // Main content with padding

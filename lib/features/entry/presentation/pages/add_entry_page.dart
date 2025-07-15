@@ -224,7 +224,7 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
 
                     // Intensity level section
                     _buildFormSection(
@@ -232,81 +232,70 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       subtitle: '1: 매우 약함 ~ 10: 매우 강함',
                       child: Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(24),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF7F7F7),
-                              borderRadius: BorderRadius.circular(12),
+                          Text(
+                            '$_intensityLevel',
+                            style: const TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFFFF5A5F),
                             ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '$_intensityLevel',
-                                  style: const TextStyle(
-                                    fontSize: 48,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFFFF5A5F),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  _getIntensityLabel(_intensityLevel),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFF717171),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 24),
-                                SliderTheme(
-                                  data: SliderTheme.of(context).copyWith(
-                                    activeTrackColor: const Color(0xFFFF5A5F),
-                                    inactiveTrackColor: const Color(0xFFDDDDDD),
-                                    thumbColor: const Color(0xFFFF5A5F),
-                                    trackHeight: 4,
-                                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-                                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
-                                  ),
-                                  child: Slider(
-                                    value: _intensityLevel.toDouble(),
-                                    min: 1,
-                                    max: 10,
-                                    divisions: 9,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _intensityLevel = value.round();
-                                      });
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      '매우 약함',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF717171),
-                                      ),
-                                    ),
-                                    const Text(
-                                      '매우 강함',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF717171),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _getIntensityLabel(_intensityLevel),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF717171),
+                              fontWeight: FontWeight.w500,
                             ),
+                          ),
+                          const SizedBox(height: 24),
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              activeTrackColor: const Color(0xFFFF5A5F),
+                              inactiveTrackColor: const Color(0xFFDDDDDD),
+                              thumbColor: const Color(0xFFFF5A5F),
+                              trackHeight: 4,
+                              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+                              overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                            ),
+                            child: Slider(
+                              value: _intensityLevel.toDouble(),
+                              min: 1,
+                              max: 10,
+                              divisions: 9,
+                              onChanged: (value) {
+                                setState(() {
+                                  _intensityLevel = value.round();
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                '매우 약함',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF717171),
+                                ),
+                              ),
+                              const Text(
+                                '매우 강함',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF717171),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
 
                     // Symptoms section
                     _buildFormSection(
@@ -360,7 +349,7 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
 
                     // Negative thoughts section
                     _buildFormSection(
@@ -381,7 +370,7 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
 
                     // Coping strategy section
                     _buildFormSection(
@@ -402,7 +391,7 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 40),
 
                     // Duration section
                     _buildFormSection(
@@ -588,50 +577,31 @@ class _AddEntryPageState extends ConsumerState<AddEntryPage> {
     String? subtitle,
     required Widget child,
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF222222),
           ),
-        ],
-        border: Border.all(
-          color: const Color(0xFFDDDDDD),
-          width: 1,
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        if (subtitle != null) ...[
+          const SizedBox(height: 8),
           Text(
-            title,
+            subtitle,
             style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF222222),
+              fontSize: 14,
+              color: Color(0xFF717171),
+              height: 1.4,
             ),
           ),
-          if (subtitle != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF717171),
-                height: 1.4,
-              ),
-            ),
-          ],
-          const SizedBox(height: 20),
-          child,
         ],
-      ),
+        const SizedBox(height: 16),
+        child,
+      ],
     );
   }
 }

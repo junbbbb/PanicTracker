@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:math';
 import '../../../entry/presentation/providers/anxiety_entry_providers.dart';
 import '../../../entry/presentation/pages/add_entry_page.dart';
 import '../../../breathing/presentation/pages/breathing_exercise_page.dart';
@@ -78,7 +79,7 @@ class HomePage extends ConsumerWidget {
               // Modern Header Section
               SliverToBoxAdapter(
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -143,9 +144,10 @@ class HomePage extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
                       
-                      // Emergency panic button - Soft rounded design
+                      // Simple panic button
+                      /*
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -157,23 +159,23 @@ class HomePage extends ConsumerWidget {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          height: 56,
                           decoration: BoxDecoration(
                             color: const Color(0xFFFF5A5F),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFFFF5A5F).withOpacity(0.25),
-                                blurRadius: 16,
-                                offset: const Offset(0, 8),
+                                color: const Color(0xFFFF5A5F).withOpacity(0.3),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
                               ),
                             ],
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               '지금 공황',
-                              style: const TextStyle(
-                                fontSize: 17,
+                              style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
@@ -181,10 +183,11 @@ class HomePage extends ConsumerWidget {
                           ),
                         ),
                       ),
+                      */
                       
                       const SizedBox(height: 16),
                       
-                      // Add entry button - Soft rounded design
+                      // Simple add entry button
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -196,35 +199,102 @@ class HomePage extends ConsumerWidget {
                         },
                         child: Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          height: 68,
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
+                            color: const Color(0xFFFF8F00),
+                            borderRadius: BorderRadius.circular(34),
+                            border: Border.all(
+                              color: const Color(0xFFE65100),
+                              width: 0.5,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.06),
-                                blurRadius: 16,
+                                color: const Color(0xFFFF9800).withOpacity(0.4),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                                spreadRadius: -4,
+                              ),
+                              BoxShadow(
+                                color: const Color(0xFFE65100).withOpacity(0.2),
+                                blurRadius: 12,
                                 offset: const Offset(0, 4),
+                                spreadRadius: -2,
                               ),
                             ],
-                            border: Border.all(
-                              color: Colors.grey.shade200,
-                              width: 1,
-                            ),
                           ),
-                          child: Center(
-                            child: Text(
-                              '새로운 기록 추가',
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey.shade700,
+                          child: Stack(
+                            children: [
+                              // Background illustration - diary theme
+                              const Positioned(
+                                right: 16,
+                                top: 2,
+                                child: Opacity(
+                                  opacity: 0.2,
+                                  child: Icon(
+                                    Icons.menu_book,
+                                    size: 64,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
+                              const Positioned(
+                                right: 45,
+                                top: 8,
+                                child: Opacity(
+                                  opacity: 0.15,
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 28,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const Positioned(
+                                right: 75,
+                                top: 20,
+                                child: Opacity(
+                                  opacity: 0.1,
+                                  child: Icon(
+                                    Icons.favorite,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const Positioned(
+                                right: 90,
+                                top: 45,
+                                child: Opacity(
+                                  opacity: 0.08,
+                                  child: Icon(
+                                    Icons.auto_stories,
+                                    size: 24,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              // Content
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '감정 기록 하기',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
+                      
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -232,63 +302,61 @@ class HomePage extends ConsumerWidget {
               
               // Stats Overview
               SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.12),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         '이번 주 요약',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF1A1A1A),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildStatItem(
-                              label: '총 기록',
-                              value: '${entries.length}개',
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _buildStatItemWithTrend(
+                                label: '발작빈도',
+                                value: '${_getThisWeekEntries(entries)}개',
+                                trend: _getFrequencyTrend(entries),
+                              ),
                             ),
-                          ),
-                          Container(
-                            width: 1,
-                            height: 40,
-                            color: Colors.grey.shade300,
-                          ),
-                          Expanded(
-                            child: _buildStatItem(
-                              label: '평균 강도',
-                              value: _getAverageIntensity(entries),
+                            Container(
+                              width: 1,
+                              height: 40,
+                              color: Colors.grey.shade300,
                             ),
-                          ),
-                          Container(
-                            width: 1,
-                            height: 40,
-                            color: Colors.grey.shade300,
-                          ),
-                          Expanded(
-                            child: _buildStatItem(
-                              label: '이번 주',
-                              value: '${_getThisWeekEntries(entries)}개',
+                            Expanded(
+                              child: _buildStatItemWithTrend(
+                                label: '평균 강도',
+                                value: _getThisWeekAverageIntensityString(entries),
+                                trend: _getIntensityTrend(entries),
+                              ),
                             ),
-                          ),
-                        ],
+                            Container(
+                              width: 1,
+                              height: 40,
+                              color: Colors.grey.shade300,
+                            ),
+                            Expanded(
+                              child: _buildStatItemWithTrend(
+                                label: '평균 지속시간',
+                                value: '${_getThisWeekAverageDuration(entries)}분',
+                                trend: _getDurationTrend(entries),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -648,6 +716,87 @@ class HomePage extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildEmotionCharacter(IconData iconType, Color color) {
+    return Container(
+      width: 60,
+      height: 60,
+      child: CustomPaint(
+        painter: SlimePainter(iconType, color),
+      ),
+    );
+  }
+
+  Widget _buildTrendSection(List entries) {
+    final thisWeekEntries = _getThisWeekEntries(entries);
+    final lastWeekEntries = _getLastWeekEntries(entries);
+    final thisWeekAverage = _getThisWeekAverageIntensity(entries);
+    final lastWeekAverage = _getLastWeekAverageIntensity(entries);
+    
+    bool isImproving = false;
+    String trendText = '';
+    IconData trendIcon = Icons.trending_flat;
+    Color trendColor = Colors.grey;
+    
+    if (lastWeekEntries > 0) {
+      // 빈도 개선 확인 (적을수록 좋음)
+      final frequencyImprovement = thisWeekEntries < lastWeekEntries;
+      // 강도 개선 확인 (낮을수록 좋음)
+      final intensityImprovement = thisWeekAverage < lastWeekAverage;
+      
+      if (frequencyImprovement && intensityImprovement) {
+        isImproving = true;
+        trendText = '많이 좋아졌어요!';
+        trendIcon = Icons.emoji_emotions;
+        trendColor = const Color(0xFF4CAF50);
+      } else if (frequencyImprovement || intensityImprovement) {
+        isImproving = true;
+        trendText = '조금 좋아졌어요';
+        trendIcon = Icons.sentiment_satisfied_alt;
+        trendColor = const Color(0xFF8BC34A);
+      } else if (thisWeekEntries > lastWeekEntries || thisWeekAverage > lastWeekAverage) {
+        trendText = '힘든 시간이네요';
+        trendIcon = Icons.sentiment_very_dissatisfied;
+        trendColor = const Color(0xFFFF7043);
+      } else {
+        trendText = '비슷한 상태예요';
+        trendIcon = Icons.sentiment_neutral;
+        trendColor = Colors.grey;
+      }
+    } else {
+      trendText = '첫 주간 기록이에요';
+      trendIcon = Icons.star;
+      trendColor = const Color(0xFFFF9800);
+    }
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildEmotionCharacter(trendIcon, trendColor),
+        const SizedBox(height: 16),
+        Text(
+          '지난 주 대비',
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade600,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          trendText,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: trendColor,
+            height: 1.2,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
   
   String _getAverageIntensity(List entries) {
     if (entries.isEmpty) return '0';
@@ -659,6 +808,38 @@ class HomePage extends ConsumerWidget {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
     return entries.where((entry) => entry.timestamp.isAfter(weekStart)).length;
+  }
+  
+  int _getLastWeekEntries(List entries) {
+    final now = DateTime.now();
+    final thisWeekStart = now.subtract(Duration(days: now.weekday - 1));
+    final lastWeekStart = thisWeekStart.subtract(const Duration(days: 7));
+    return entries.where((entry) => 
+      entry.timestamp.isAfter(lastWeekStart) && 
+      entry.timestamp.isBefore(thisWeekStart)
+    ).length;
+  }
+  
+  double _getThisWeekAverageIntensity(List entries) {
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final thisWeekEntries = entries.where((entry) => entry.timestamp.isAfter(weekStart)).toList();
+    if (thisWeekEntries.isEmpty) return 0;
+    final total = thisWeekEntries.fold(0, (int sum, entry) => sum + (entry.intensityLevel as int));
+    return total / thisWeekEntries.length;
+  }
+  
+  double _getLastWeekAverageIntensity(List entries) {
+    final now = DateTime.now();
+    final thisWeekStart = now.subtract(Duration(days: now.weekday - 1));
+    final lastWeekStart = thisWeekStart.subtract(const Duration(days: 7));
+    final lastWeekEntries = entries.where((entry) => 
+      entry.timestamp.isAfter(lastWeekStart) && 
+      entry.timestamp.isBefore(thisWeekStart)
+    ).toList();
+    if (lastWeekEntries.isEmpty) return 0;
+    final total = lastWeekEntries.fold(0, (int sum, entry) => sum + (entry.intensityLevel as int));
+    return total / lastWeekEntries.length;
   }
   
   Color _getIntensityColor(int intensity) {
@@ -699,17 +880,24 @@ class HomePage extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.grey.shade300,
+            width: 0.5,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+              spreadRadius: 0,
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+              spreadRadius: 0,
             ),
           ],
-          border: Border.all(
-            color: const Color(0xFFDDDDDD),
-            width: 1,
-          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -969,4 +1157,399 @@ class HomePage extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildStatItemWithTrend({
+    required String label,
+    required String value,
+    required String trend,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1A1A1A),
+                ),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                trend,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFFF9800), // 주황색
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade600,
+            ),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getThisWeekAverageIntensityString(List entries) {
+    final thisWeekList = entries.where((entry) {
+      final now = DateTime.now();
+      final weekStart = now.subtract(Duration(days: now.weekday - 1));
+      final weekEnd = weekStart.add(const Duration(days: 6));
+      return entry.timestamp.isAfter(weekStart) && entry.timestamp.isBefore(weekEnd.add(const Duration(days: 1)));
+    }).toList();
+    
+    if (thisWeekList.isEmpty) return '0.0';
+    
+    final sum = thisWeekList.fold(0.0, (sum, entry) => sum + entry.intensityLevel);
+    return (sum / thisWeekList.length).toStringAsFixed(1);
+  }
+
+  int _getThisWeekAverageDuration(List entries) {
+    final thisWeekList = entries.where((entry) {
+      final now = DateTime.now();
+      final weekStart = now.subtract(Duration(days: now.weekday - 1));
+      final weekEnd = weekStart.add(const Duration(days: 6));
+      return entry.timestamp.isAfter(weekStart) && entry.timestamp.isBefore(weekEnd.add(const Duration(days: 1)));
+    }).toList();
+    
+    if (thisWeekList.isEmpty) return 0;
+    
+    final sum = thisWeekList.fold<int>(0, (sum, entry) => sum + (entry.durationInMinutes as int));
+    return (sum / thisWeekList.length).round();
+  }
+
+  String _getFrequencyTrend(List entries) {
+    final thisWeekCount = _getThisWeekEntries(entries);
+    final lastWeekCount = _getLastWeekEntries(entries);
+    
+    if (lastWeekCount == 0) {
+      return thisWeekCount > 0 ? '↑' : '→';
+    }
+    
+    if (thisWeekCount > lastWeekCount) {
+      return '↑';
+    } else if (thisWeekCount < lastWeekCount) {
+      return '↓';
+    } else {
+      return '→';
+    }
+  }
+
+  String _getIntensityTrend(List entries) {
+    final thisWeekAvg = double.tryParse(_getThisWeekAverageIntensityString(entries)) ?? 0.0;
+    final lastWeekAvg = _getLastWeekAverageIntensity(entries);
+    
+    if (lastWeekAvg == 0) {
+      return thisWeekAvg > 0 ? '↑' : '→';
+    }
+    
+    if (thisWeekAvg > lastWeekAvg) {
+      return '↑';
+    } else if (thisWeekAvg < lastWeekAvg) {
+      return '↓';
+    } else {
+      return '→';
+    }
+  }
+
+  String _getDurationTrend(List entries) {
+    final thisWeekAvg = _getThisWeekAverageDuration(entries);
+    final lastWeekAvg = _getLastWeekAverageDuration(entries);
+    
+    if (lastWeekAvg == 0) {
+      return thisWeekAvg > 0 ? '↑' : '→';
+    }
+    
+    if (thisWeekAvg > lastWeekAvg) {
+      return '↑';
+    } else if (thisWeekAvg < lastWeekAvg) {
+      return '↓';
+    } else {
+      return '→';
+    }
+  }
+
+  int _getLastWeekAverageDuration(List entries) {
+    final now = DateTime.now();
+    final lastWeekStart = now.subtract(Duration(days: now.weekday - 1 + 7));
+    final lastWeekEnd = lastWeekStart.add(const Duration(days: 6));
+    
+    final lastWeekList = entries.where((entry) {
+      return entry.timestamp.isAfter(lastWeekStart) && entry.timestamp.isBefore(lastWeekEnd.add(const Duration(days: 1)));
+    }).toList();
+    
+    if (lastWeekList.isEmpty) return 0;
+    
+    final sum = lastWeekList.fold<int>(0, (sum, entry) => sum + (entry.durationInMinutes as int));
+    return (sum / lastWeekList.length).round();
+  }
+}
+
+class SlimePainter extends CustomPainter {
+  final IconData iconType;
+  final Color color;
+
+  SlimePainter(this.iconType, this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2.5;
+
+    // 슬라임 몸체 그리기
+    _drawSlimeBody(canvas, center, radius);
+    
+    // 표정 그리기
+    if (iconType == Icons.emoji_emotions) {
+      _drawHappyFace(canvas, center, radius);
+    } else if (iconType == Icons.sentiment_satisfied_alt) {
+      _drawContentFace(canvas, center, radius);
+    } else if (iconType == Icons.sentiment_very_dissatisfied) {
+      _drawSadFace(canvas, center, radius);
+    } else if (iconType == Icons.sentiment_neutral) {
+      _drawNeutralFace(canvas, center, radius);
+    } else {
+      _drawStarFace(canvas, center, radius);
+    }
+  }
+
+  void _drawSlimeBody(Canvas canvas, Offset center, double radius) {
+    final paint = Paint()
+      ..color = color.withOpacity(0.8)
+      ..style = PaintingStyle.fill;
+
+    // 메인 슬라임 몸체 (둥근 타원형)
+    final bodyRect = Rect.fromCenter(
+      center: Offset(center.dx, center.dy + radius * 0.1),
+      width: radius * 2,
+      height: radius * 1.8,
+    );
+    canvas.drawOval(bodyRect, paint);
+
+    // 슬라임 하이라이트
+    final highlightPaint = Paint()
+      ..color = Colors.white.withOpacity(0.3)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(center.dx - radius * 0.3, center.dy - radius * 0.2),
+        width: radius * 0.8,
+        height: radius * 0.6,
+      ),
+      highlightPaint,
+    );
+  }
+
+  void _drawHappyFace(Canvas canvas, Offset center, double radius) {
+    final eyePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    // 눈 (작은 점들)
+    canvas.drawCircle(
+      Offset(center.dx - radius * 0.3, center.dy - radius * 0.15),
+      radius * 0.08,
+      eyePaint,
+    );
+    canvas.drawCircle(
+      Offset(center.dx + radius * 0.3, center.dy - radius * 0.15),
+      radius * 0.08,
+      eyePaint,
+    );
+
+    // 큰 웃는 입
+    final mouthPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.08
+      ..strokeCap = StrokeCap.round;
+
+    final mouthRect = Rect.fromCenter(
+      center: Offset(center.dx, center.dy + radius * 0.2),
+      width: radius * 0.8,
+      height: radius * 0.4,
+    );
+    canvas.drawArc(mouthRect, 0, pi, false, mouthPaint);
+  }
+
+  void _drawContentFace(Canvas canvas, Offset center, double radius) {
+    final eyePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    // 눈 (작은 점들)
+    canvas.drawCircle(
+      Offset(center.dx - radius * 0.3, center.dy - radius * 0.1),
+      radius * 0.06,
+      eyePaint,
+    );
+    canvas.drawCircle(
+      Offset(center.dx + radius * 0.3, center.dy - radius * 0.1),
+      radius * 0.06,
+      eyePaint,
+    );
+
+    // 작은 미소
+    final mouthPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.06
+      ..strokeCap = StrokeCap.round;
+
+    final mouthRect = Rect.fromCenter(
+      center: Offset(center.dx, center.dy + radius * 0.25),
+      width: radius * 0.5,
+      height: radius * 0.2,
+    );
+    canvas.drawArc(mouthRect, 0, pi, false, mouthPaint);
+  }
+
+  void _drawSadFace(Canvas canvas, Offset center, double radius) {
+    final eyePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.05
+      ..strokeCap = StrokeCap.round;
+
+    // X 모양 눈
+    canvas.drawLine(
+      Offset(center.dx - radius * 0.4, center.dy - radius * 0.2),
+      Offset(center.dx - radius * 0.2, center.dy),
+      eyePaint,
+    );
+    canvas.drawLine(
+      Offset(center.dx - radius * 0.2, center.dy - radius * 0.2),
+      Offset(center.dx - radius * 0.4, center.dy),
+      eyePaint,
+    );
+
+    canvas.drawLine(
+      Offset(center.dx + radius * 0.2, center.dy - radius * 0.2),
+      Offset(center.dx + radius * 0.4, center.dy),
+      eyePaint,
+    );
+    canvas.drawLine(
+      Offset(center.dx + radius * 0.4, center.dy - radius * 0.2),
+      Offset(center.dx + radius * 0.2, center.dy),
+      eyePaint,
+    );
+
+    // 슬픈 입 (아래로 휜 곡선)
+    final mouthPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.06
+      ..strokeCap = StrokeCap.round;
+
+    final mouthRect = Rect.fromCenter(
+      center: Offset(center.dx, center.dy + radius * 0.5),
+      width: radius * 0.6,
+      height: radius * 0.3,
+    );
+    canvas.drawArc(mouthRect, pi, pi, false, mouthPaint);
+  }
+
+  void _drawNeutralFace(Canvas canvas, Offset center, double radius) {
+    final eyePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    // 눈 (작은 점들)
+    canvas.drawCircle(
+      Offset(center.dx - radius * 0.3, center.dy - radius * 0.1),
+      radius * 0.06,
+      eyePaint,
+    );
+    canvas.drawCircle(
+      Offset(center.dx + radius * 0.3, center.dy - radius * 0.1),
+      radius * 0.06,
+      eyePaint,
+    );
+
+    // 일자 입
+    final mouthPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.05
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawLine(
+      Offset(center.dx - radius * 0.2, center.dy + radius * 0.25),
+      Offset(center.dx + radius * 0.2, center.dy + radius * 0.25),
+      mouthPaint,
+    );
+  }
+
+  void _drawStarFace(Canvas canvas, Offset center, double radius) {
+    final starPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+
+    // 별 모양 눈
+    _drawStar(canvas, Offset(center.dx - radius * 0.3, center.dy - radius * 0.1), radius * 0.15, starPaint);
+    _drawStar(canvas, Offset(center.dx + radius * 0.3, center.dy - radius * 0.1), radius * 0.15, starPaint);
+
+    // 웃는 입
+    final mouthPaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius * 0.06
+      ..strokeCap = StrokeCap.round;
+
+    final mouthRect = Rect.fromCenter(
+      center: Offset(center.dx, center.dy + radius * 0.25),
+      width: radius * 0.6,
+      height: radius * 0.3,
+    );
+    canvas.drawArc(mouthRect, 0, pi, false, mouthPaint);
+  }
+
+  void _drawStar(Canvas canvas, Offset center, double size, Paint paint) {
+    final path = Path();
+    for (int i = 0; i < 5; i++) {
+      final angle = (i * 4 * pi) / 5 - pi / 2;
+      final outerRadius = size;
+      final innerRadius = size * 0.4;
+      
+      // 외부 점
+      final outerX = center.dx + outerRadius * cos(angle);
+      final outerY = center.dy + outerRadius * sin(angle);
+      
+      // 내부 점
+      final innerAngle = angle + pi / 5;
+      final innerX = center.dx + innerRadius * cos(innerAngle);
+      final innerY = center.dy + innerRadius * sin(innerAngle);
+      
+      if (i == 0) {
+        path.moveTo(outerX, outerY);
+      } else {
+        path.lineTo(outerX, outerY);
+      }
+      path.lineTo(innerX, innerY);
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

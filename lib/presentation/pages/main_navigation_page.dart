@@ -30,7 +30,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           border: Border(
             top: BorderSide(
               color: Colors.grey.shade300,
-              width: 1,
+              width: 0.5,
             ),
           ),
         ),
@@ -89,7 +89,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
               icon,
               size: 24,
               color: isSelected 
-                  ? const Color(0xFFFF5A5F)
+                  ? const Color(0xFFFF8F00)
                   : Colors.grey.shade400,
             ),
             const SizedBox(height: 4),
@@ -99,7 +99,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected 
-                    ? const Color(0xFFFF5A5F)
+                    ? const Color(0xFFFF8F00)
                     : Colors.grey.shade400,
               ),
             ),
